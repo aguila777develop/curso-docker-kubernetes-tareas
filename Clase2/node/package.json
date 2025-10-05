@@ -1,0 +1,16 @@
+{
+  "name": "node",
+  "version": "1.0.0",
+  "description": "Aplicacion Node para dockerizar",
+  "license": "MIT",
+  "author": "Porfirio Ramos",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node app.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0"
+  }
+}
