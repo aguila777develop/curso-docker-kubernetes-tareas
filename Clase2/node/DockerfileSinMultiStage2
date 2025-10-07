@@ -1,0 +1,14 @@
+# --- Stage 1: Build / Compilation ---
+FROM node:alpine3.22
+
+# Establecer directorio de trabajo
+WORKDIR /app
+
+# Copiar archivos de dependencias
+COPY package*.json ./
+
+# Instalar todas las dependencias (incluyendo devDependencies)
+RUN npm install
+
+# Copiar el código de la aplicación
+COPY . .
