@@ -1,0 +1,43 @@
+version: '3.8'
+
+services:
+  # Servicio Nginx (servidor web)
+  nginx:
+    build: ./nginx
+    ports:
+      - "8081:80"  # Mapear puerto 8081 del host al 80 del contenedor
+    networks:
+      - app-network
+    volumes:
+      - ./nginx/html:/usr/share/nginx/html  # Volumen para compartir el contenido HTML estático
+
+  # Servicio PostgreSQL (base de datos)
+  db:
+    image: postgres:alpine
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: appdb
+    networks:
+      - app-network
+    volumes:
+      - db-data:/var/lib/postgresql/data  # Volumen persistente para la base de datos
+    ports:
+      - "5432:5432"  # Puerto para conectar a PostgreSQL desde el host
+
+  # (Opcional) Servicio Adminer (GUI para PostgreSQL)
+  adminer:
+    image: adminer
+    ports:
+      - "8080:8080"  # GUI accesible en http://localhost:8080
+    networks:
+      - app-network
+
+# Redes para los contenedores
+networks:
+  app-network:
+    driver: bridge
+
+# Volúmenes para persistencia de datos
+volumes:
+  db-data:
