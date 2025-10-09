@@ -18,8 +18,8 @@ define tres servicios: un servidor Nginx para servir contenido estático, una ba
 ## <mark>🔥 3. Cómo Ejecutar</mark>
 1. Clonar:
    ```bash
-   git clone https://github.com/tu-usuario/tu-repo.git
-   cd tu-repo
+   https://github.com/aguila777develop/curso-docker-kubernetes-tareas.git
+   cd curso-docker-kubernetes-tareas
    ```
 2. Levantar servicios:
    ```bash
