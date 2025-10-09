@@ -1,4 +1,4 @@
-# Tarea 2 - Aplicación Multi-Contenedor con Docker Compose
+# Tarea 3 - Aplicación Multi-Contenedor con Docker Compose
 
 > 🎯 Objetivo general
 
