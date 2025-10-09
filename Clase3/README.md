@@ -7,6 +7,7 @@ Crear una aplicación multi-contenedor usando Docker Compose, aplicando los conc
 ## <mark>🔥 1. Encabezado</mark>
 ## 👉 Nombre de la Aplicación: clase3-nginex
 **Curso:** Docker & Kubernetes - Clase 3
+
 **Estudiante:** Porfirio Ramos Fernandez
 
 **Breve descripción**
