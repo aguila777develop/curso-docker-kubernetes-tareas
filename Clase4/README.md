@@ -28,7 +28,6 @@ Cliente se conecta al servicio api-gateway al puerto :8080 y este api-gateway es
 - Postgres 13
 - Redis 7
 - Docker & Docker Compose
-- Trivy para escaneo de seguridad
 ```
 
 
