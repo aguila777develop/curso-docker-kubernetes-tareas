@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frontend - API Gateway Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Montserrat:wght@600&display=swap" rel="stylesheet" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Roboto', sans-serif;
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        color: #fff;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+      }
+
+      .header {
+        background: #34495e;
+        color: #fff;
+        padding: 40px 20px;
+        text-align: center;
+        border-bottom: 3px solid #ffffff;
+      }
+
+      .header img {
+        width: 100px;
+        margin-bottom: 20px;
+      }
+
+      .header h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+      }
+
+      .header p {
+        font-size: 1.2rem;
+        opacity: 0.8;
+      }
+
+      .content {
+        padding: 40px;
+      }
+
+      .section {
+        margin-bottom: 40px;
+      }
+
+      .section h2 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        color: #3498db;
+        margin-bottom: 15px;
+      }
+
+      .button {
+        background: #3498db;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 8px;
+        cursor: pointer;
+        font-size: 1rem;
+        margin: 10px;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+      }
+
+      .button:hover {
+        background: #2980b9;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="number"] {
+        width: 100%;
+        padding: 12px;
+        margin: 12px 0;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border 0.3s ease;
+      }
+
+      input[type="text"]:focus,
+      input[type="email"]:focus,
+      input[type="number"]:focus {
+        border-color: #3498db;
+        outline: none;
+      }
+
+      .response {
+        background: #75707f;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        padding: 20px;
+        margin-top: 20px;
+        font-family: "Courier New", monospace;
+        font-size: 0.9rem;
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .footer {
+        background: #333;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        font-size: 1rem;
+        margin-top: 40px;
+      }
+
+      .crearUser {
+        background: #34495e;
+        color: white;
+        text-align: center;
+        padding: 20px;
+        font-size: 1rem;
+        margin-top: 40px;
+        cursor: pointer;
+        display: inline-block;
+        margin-bottom: 10px;
+        border-radius: 8px;
+      }
+
+      .form-container {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <img src="https://static.wixstatic.com/media/89a425_71171e9bf38e4a7e825edf7ccbf22681~mv2.png/v1/fill/w_160,h_160,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/iQ-Group-200x20022.png" alt="Logo" />
+        <h1>API Gateway con Nginx</h1>
+        <p>Clase 4: Microservicios, Cache y API Gateway</p>
+      </div>
+
+      <div class="content">
+        <!-- Backend -->
+        <div class="section">
+          <h2>Probar Backend API (via Gateway)</h2>
+          <button class="button" onclick="testBackend('/api/info')">GET /api/info (Backend)</button>
+          <button class="button" onclick="testBackend('/api/users')">GET /api/users (Backend)</button>
+          <button class="button" onclick="testBackend('/api/health')">GET /api/health (Backend)</button>
+          <div id="backend-response" class="response" style="display: none"></div>
+        </div>
+        <!-- Crear Usuario -->
+        <div class="section">
+          <h2>Crear Usuario (via Backend)</h2>
+          <div class="crearUser" onclick="toggleForm('userForm')">Crear Usuario</div>
+          <div id="userForm" class="form-container">
+            <input type="text" id="create-user-name" placeholder="Nombre del Usuario" />
+            <input type="email" id="create-user-email" placeholder="Email del Usuario" />
+            <button class="button" onclick="createUser()">Crear Usuario</button>
+            <div id="user-response" class="response" style="display: none"></div>
+          </div>
+        </div>
+        <!-- Products -->
+        <div class="section">
+          <h2>Probar Products API (via Gateway)</h2>
+          <button class="button" onclick="testProducts('/api/products')">GET /api/products (Products)</button>
+          <button class="button" onclick="testProducts('/api/products/68f1752b3ea42d7ef1ce5f49')">GET /api/products/:id (Products)</button>
+          
+          <div id="products-response" class="response" style="display: none"></div>
+          
+          <!-- Crear Producto -->
+          <div class="crearUser" onclick="toggleForm('productForm')">Crear Producto</div>
+          <div id="productForm" class="form-container">
+            <input type="text" id="create-product-name" placeholder="Nombre del Producto" />
+            <input type="number" id="create-product-price" placeholder="Precio del Producto" />
+            <input type="text" id="create-product-description" placeholder="Descripción del Producto" />
+            <button class="button" type="button" onclick="createProduct()">Crear Producto</button>
+          </div>
+
+          <!-- Actualizar Producto -->
+          <div class="crearUser" onclick="toggleForm('updateProductForm')">Actualizar Producto</div>
+          <div id="updateProductForm" class="form-container">
+            <input type="text" id="update-product-id" placeholder="ID del Producto" />
+            <input type="text" id="update-product-name" placeholder="Nuevo Nombre del Producto" />
+            <input type="number" id="update-product-price" placeholder="Nuevo Precio" />
+            <input type="text" id="update-product-description" placeholder="Nueva Descripción" />
+            <button class="button" onclick="updateProduct()">Actualizar Producto</button>
+          </div>
+        </div>
+
+        
+
+        <!-- Gateway Status -->
+        <div class="section">
+          <h2>Estado del Gateway</h2>
+          <button class="button" onclick="testGateway()">Health Check Gateway</button>
+          <div id="gateway-response" class="response" style="display: none"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer">
+      <p>&copy; 2025 API Gateway Demo | Desarrollado por Tu Nombre</p>
+    </div>
+
+    <script>
+      // Toggle form visibility
+      function toggleForm(formId) {
+        const form = document.getElementById(formId);
+        form.style.display = form.style.display === "none" ? "block" : "none";
+      }
+
+      async function testBackend(endpoint) {
+        const responseDiv = document.getElementById("backend-response");
+        responseDiv.style.display = "block";
+        responseDiv.textContent = "Cargando...";
+
+        try {
+          const response = await fetch(`http://localhost:8080${endpoint}`);
+          const data = await response.json();
+          responseDiv.textContent = `Status: ${response.status}\n\n${JSON.stringify(data, null, 2)}`;
+        } catch (error) {
+          responseDiv.textContent = `Error: ${error.message}`;
+        }
+      }
+
+      async function testProducts(endpoint) {
+        const responseDiv = document.getElementById("products-response");
+        responseDiv.style.display = "block";
+        responseDiv.textContent = "Cargando productos...";
+
+        try {
+          const response = await fetch(`http://localhost:8080${endpoint}`);
+          const data = await response.json();
+          responseDiv.textContent = `Status: ${response.status}\n\n${JSON.stringify(data, null, 2)}`;
+        } catch (error) {
+          responseDiv.textContent = `Error: ${error.message}`;
+        }
+      }
+
+      async function testGateway() {
+        const responseDiv = document.getElementById("gateway-response");
+        responseDiv.style.display = "block";
+        responseDiv.textContent = "Verificando gateway...";
+
+        try {
+          const response = await fetch("http://localhost:8080/gateway/health");
+          const text = await response.text();
+          responseDiv.textContent = `Status: ${response.status}\n\n${text}`;
+        } catch (error) {
+          responseDiv.textContent = `Error: ${error.message}`;
+        }
+      }
+
+      async function createProduct() {
+        const responseDiv = document.getElementById("products-response");
+        responseDiv.style.display = "block";
+        responseDiv.textContent = "Creando producto...";
+
+        let name = document.getElementById("create-product-name").value;
+        let price = document.getElementById("create-product-price").value;
+        let description = document.getElementById("create-product-description").value;
+
+        // Validación de campos
+        if (!name || !price || !description) {
+          responseDiv.textContent = "Por favor, ingrese todos los campos del producto.";
+          return;
+        }
+
+        const product = { name, price, description };
+        try {
+          const response = await fetch("http://localhost:8080/api/products", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(product)
+          });
+
+          if (response.ok) {
+            const data = await response.json();
+            document.getElementById("create-product-name").value = "";
+            document.getElementById("create-product-price").value = "";
+            document.getElementById("create-product-description").value = "";
+            responseDiv.textContent = `Producto creado exitosamente: ${JSON.stringify(data, null, 2)}`;
+          } else {
+            const errorData = await response.json();
+            responseDiv.textContent = `Error al crear producto: ${response.status} - ${errorData.message || "Error desconocido"}`;
+          }
+        } catch (error) {
+          responseDiv.textContent = `Error: ${error.message}`;
+        }
+      }
+
+      async function updateProduct() {
+        const responseDiv = document.getElementById("products-response");
+        responseDiv.style.display = "block";
+        responseDiv.textContent = "Actualizando producto...";
+
+        const productId = document.getElementById("update-product-id").value;
+        const name = document.getElementById("update-product-name").value;
+        const price = document.getElementById("update-product-price").value;
+        const description = document.getElementById("update-product-description").value;
+
+        if (!productId || !name || !price || !description) {
+          responseDiv.textContent = "Por favor, ingrese todos los campos del producto y el ID.";
+          return;
+        }
+
+        const product = { name, price, description };
+
+        try {
+          const response = await fetch(`http://localhost:8080/api/products/${productId}`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(product)
+          });
+
+          const data = await response.json();
+          document.getElementById("update-product-id").value = "";
+          document.getElementById("update-product-name").value = "";
+          document.getElementById("update-product-price").value = "";
+          document.getElementById("update-product-description").value = "";
+          responseDiv.textContent = `Status: ${response.status}\n\n${JSON.stringify(data, null, 2)}`;
+        } catch (error) {
+          responseDiv.textContent = `Error: ${error.message}`;
+        }
+      }
+
+      async function createUser() {
+        const responseDiv = document.getElementById("user-response");
+        responseDiv.style.display = "block";
+        responseDiv.textContent = "Creando usuario...";
+
+        const name = document.getElementById("create-user-name").value;
+        const email = document.getElementById("create-user-email").value;
+
+        if (!name || !email) {
+          responseDiv.textContent = "Por favor, ingrese todos los campos del usuario.";
+          return;
+        }
+
+        const user = { name, email };
+
+        try {
+          const response = await fetch("http://localhost:8080/api/users", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify(user)
+          });
+
+          const data = await response.json();
+          responseDiv.textContent = `Status: ${response.status}\n\n${JSON.stringify(data, null, 2)}`;
+        } catch (error) {
+          responseDiv.textContent = `Error: ${error.message}`;
+        }
+      }
+    </script>
+  </body>
+</html>

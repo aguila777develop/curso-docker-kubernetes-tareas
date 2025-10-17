@@ -1,0 +1,7 @@
+{
+  "dependencies": {
+    "generic-pool": "^3.9.0",
+    "redis": "^5.8.3",
+    "yallist": "^5.0.0"
+  }
+}

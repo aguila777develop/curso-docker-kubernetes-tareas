@@ -1,0 +1,23 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+node_modules/
+comandosCrearAdicionarRegDB.md
+docker-compose copy.yml
+docker-composeBackendPostgresOK.yml
+FUncionaOK-sin-redis.zip
+index copy.html
+indexFUncionado2Endpoints.html
+README2.md
+Documentacion.md
+DockerfileCopy
+# Variables de entorno (NUNCA subir credenciales)
+.env
+.env.local
+
+# Archivos temporales
+*.tmp
+*.swp
