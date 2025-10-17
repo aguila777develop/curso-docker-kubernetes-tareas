@@ -104,9 +104,11 @@ Clase4/
 ## <mark>🔥 4. Instrucciones de Uso</mark>
 ```bash
 # Clonar repositorio
-git clone <tu-repo>
+git clone https://github.com/aguila777develop/curso-docker-kubernetes-tareas.git
 
 # Levantar servicios
+cd curso-docker-kubernetes-tareas
+cd Clase4
 docker compose up -d
 
 # Verificar estado
