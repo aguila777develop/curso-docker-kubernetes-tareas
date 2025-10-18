@@ -1,0 +1,20 @@
+# Archivos del sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+node_modules/
+README2.md
+Documentacion.md
+DockerfileCopy
+Dockerfile
+tarea-casa.md
+secret.yaml
+# Variables de entorno (NUNCA subir credenciales)
+.env
+.env.local
+
+# Archivos temporales
+*.tmp
+*.swp

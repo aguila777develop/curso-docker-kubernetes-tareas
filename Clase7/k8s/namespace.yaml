@@ -1,0 +1,9 @@
+cat > namespace.yaml <<EOF
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: tarea-clase7
+  labels:
+    proyecto: tarea
+    clase: clase7
+EOF
