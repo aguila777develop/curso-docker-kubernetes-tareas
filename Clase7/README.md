@@ -367,7 +367,7 @@ kubectl get namespaces | grep tarea-clase7
 
 kubectl get pvc --all-namespaces | grep tarea-clase7
 ```
-
+![delete](screenshots/delete.png)
 
 
 
