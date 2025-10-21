@@ -5,6 +5,18 @@
 ## <mark> 🔥 a) Descripción del proyecto:</mark>
 - **Stack desplegado (frontend + backend)**
 - **Conceptos aplicados (Ingress, health probes, HPA)**
+**Ingress:** El Ingress es el puente entre el mundo externo y tus servicios dentro del clúster.
+Permite que los usuarios accedan a tus aplicaciones (frontend, backend, APIs, etc.) usando rutas HTTP o HTTPS.
+**HPA:** El HPA (Horizontal Pod Autoscaler) ajusta automáticamente el número de réplicas de un Deployment según la carga (CPU, memoria, etc.).
+**Health probes:** Las probes son chequeos automáticos que hace Kubernetes para saber si un contenedor está sano o no.
+Hay dos tipos principales:
+
+  * Liveness Probe: verifica si el contenedor sigue vivo. Si falla → Kubernetes lo reinicia.
+
+  * Readiness Probe: verifica si el contenedor está listo para recibir tráfico. Si falla → no recibe peticiones hasta recuperarse.
+
+
+
 ## <mark> 🔥 b) Instrucciones de despliegue:</mark>
 **1. Habilitar addons (ingress, metrics-server)**
 ```bash
@@ -22,9 +34,91 @@ kubectl apply -f hpa.yaml
 
 ```
 **3. Verificar recursos**
+```bash
+ ~ kubectl get ingress
+NAME          CLASS   HOSTS   ADDRESS        PORTS   AGE
+app-ingress   nginx   *       192.168.49.2   80      102m
+➜  ~ kubectl get hpa
+NAME          REFERENCE            TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+backend       Deployment/backend   cpu: <unknown>/50%   2         5         2          11m
+backend-hpa   Deployment/backend   cpu: <unknown>/50%   2         5         2          43m
+➜  ~ kubectl top pods
+NAME                        CPU(cores)   MEMORY(bytes)
+backend-6cdb48f4fc-dlb2b    1m           10Mi
+backend-6cdb48f4fc-fb7qp    1m           10Mi
+frontend-55b84b596d-fvpqx   1m           10Mi
+frontend-55b84b596d-r6cgm   1m           10Mi
+➜  ~ kubectl get pods -n ingress-nginx
+NAME                                       READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create-t8zp2       0/1     Completed   0          12h
+ingress-nginx-admission-patch-h4b7p        0/1     Completed   1          12h
+ingress-nginx-controller-9cc49f96f-z528x   1/1     Running     0          12h
+➜  ~ kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+backend-6cdb48f4fc-dlb2b    1/1     Running   0          75m
+backend-6cdb48f4fc-fb7qp    1/1     Running   0          75m
+frontend-55b84b596d-fvpqx   1/1     Running   0          127m
+frontend-55b84b596d-r6cgm   1/1     Running   0          127m
+load-generator              0/1     Error     0          66m
+➜  ~ kubectl describe ingress
+Name:             app-ingress
+Labels:           <none>
+Namespace:        default
+Address:          192.168.49.2
+Ingress Class:    nginx
+Default backend:  <default>
+Rules:
+  Host        Path  Backends
+  ----        ----  --------
+  *
+              /      frontend-service:80 (10.244.0.26:80,10.244.0.27:80)
+              /api   backend-service:80 (10.244.0.30:80,10.244.0.31:80)
+Annotations:  nginx.ingress.kubernetes.io/rewrite-target: /
+Events:       <none>
+➜  ~ kubectl get hpa
+NAME          REFERENCE            TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+backend       Deployment/backend   cpu: <unknown>/50%   2         5         2          37m
+backend-hpa   Deployment/backend   cpu: <unknown>/50%   2         5         2          70m
+➜  ~ kubectl get pods -o wide
+NAME                        READY   STATUS    RESTARTS   AGE    IP            NODE       NOMINATED NODE   READINESS GATES
+backend-6cdb48f4fc-dlb2b    1/1     Running   0          78m    10.244.0.30   minikube   <none>           <none>
+backend-6cdb48f4fc-fb7qp    1/1     Running   0          78m    10.244.0.31   minikube   <none>           <none>
+frontend-55b84b596d-fvpqx   1/1     Running   0          129m   10.244.0.26   minikube   <none>           <none>
+frontend-55b84b596d-r6cgm   1/1     Running   0          129m   10.244.0.27   minikube   <none>           <none>
+load-generator              0/1     Error     0          69m    10.244.0.33   minikube   <none>           <none>
+➜  ~ kubectl get svc
+NAME               TYPE        CLUSTER-IP       EXTERNAL-IP   PORT(S)   AGE
+backend-service    ClusterIP   10.101.121.191   <none>        80/TCP    130m
+frontend-service   ClusterIP   10.99.58.47      <none>        80/TCP    129m
+kubern
+```
 **4. Probar Ingress**
 ```bash
-
+~ kubectl get ingress
+NAME          CLASS   HOSTS   ADDRESS        PORTS   AGE
+app-ingress   nginx   *       192.168.49.2   80      102m
+➜  ~ kubectl get hpa
+NAME          REFERENCE            TARGETS              MINPODS   MAXPODS   REPLICAS   AGE
+backend       Deployment/backend   cpu: <unknown>/50%   2         5         2          11m
+backend-hpa   Deployment/backend   cpu: <unknown>/50%   2         5         2          43m
+➜  ~ kubectl top pods
+NAME                        CPU(cores)   MEMORY(bytes)
+backend-6cdb48f4fc-dlb2b    1m           10Mi
+backend-6cdb48f4fc-fb7qp    1m           10Mi
+frontend-55b84b596d-fvpqx   1m           10Mi
+frontend-55b84b596d-r6cgm   1m           10Mi
+➜  ~ kubectl get pods -n ingress-nginx
+NAME                                       READY   STATUS      RESTARTS   AGE
+ingress-nginx-admission-create-t8zp2       0/1     Completed   0          12h
+ingress-nginx-admission-patch-h4b7p        0/1     Completed   1          12h
+ingress-nginx-controller-9cc49f96f-z528x   1/1     Running     0          12h
+➜  ~ kubectl get pods
+NAME                        READY   STATUS    RESTARTS   AGE
+backend-6cdb48f4fc-dlb2b    1/1     Running   0          75m
+backend-6cdb48f4fc-fb7qp    1/1     Running   0          75m
+frontend-55b84b596d-fvpqx   1/1     Running   0          127m
+frontend-55b84b596d-r6cgm   1/1     Running   0          127m
+load-generator              0/1     Error     0          66m
 ```
 **5. Probar HPA con carga**
 ## <mark> 🔥 c) Comandos de verificación:</mark>
