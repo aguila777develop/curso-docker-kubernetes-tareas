@@ -1,0 +1,6 @@
+cat > api-response.json <<EOF
+{
+    "status": "success",
+    "message": "Curso de Doker & Kubernetes 2025"
+}
+EOF
