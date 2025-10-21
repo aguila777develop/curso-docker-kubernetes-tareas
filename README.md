@@ -12,6 +12,6 @@
 5. **[Arquitectura de Kubernetes](/Clase5/README.md)
 6. **[Pods, Deployments y Services](/Clase6/README.md)
 7. **[ConfigMaps, Secrets y Probes](/Clase7/README.md)
-8. Escalado automático (HPA) e Ingress
+8. **[Escalado automático (HPA) e Ingress](/Clase8/README.md)
 9. Observabilidad (logs, métricas, Prometheus/Grafana)
 10. Proyecto final integrador
